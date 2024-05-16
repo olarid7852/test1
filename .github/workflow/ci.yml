@@ -1,0 +1,29 @@
+name: CherryPy CI
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+
+      - name: Run tests
+        run: |
+          pytest tests/
+
+      - name: Build and deploy
+        env:
+          PORT: 8080
+        run: |
+          python app.py &
+          sleep 5
+          curl --request GET --url http://localhost:8080/
